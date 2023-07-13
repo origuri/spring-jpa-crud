@@ -9,6 +9,8 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @Table(name = "board_table")
 public class BoardEntity extends BaseEntity {
 
@@ -41,9 +43,18 @@ public class BoardEntity extends BaseEntity {
         this.boardHits = boardDto.getBoardHits();
     }
 
+    public static BoardEntity toSaveEntity(BoardDto boardDto){
+        return BoardEntity.builder()
+                .boardWriter(boardDto.getBoardWriter())
+                .boardPass(boardDto.getBoardPass())
+                .boardTitle(boardDto.getBoardTitle())
+                .boardContents(boardDto.getBoardContents())
+                .boardHits(boardDto.getBoardHits())
+                .build();
+    }
 
-  /*  public static toSaveEntityBulider bulider(BoardDto boardDto){
-        return toSaveEntityBulider()
+    public static BoardEntity toUpdateEntity(BoardDto boardDto) {
+        return BoardEntity.builder()
                 .id(boardDto.getId())
                 .boardWriter(boardDto.getBoardWriter())
                 .boardPass(boardDto.getBoardPass())
@@ -51,7 +62,12 @@ public class BoardEntity extends BaseEntity {
                 .boardContents(boardDto.getBoardContents())
                 .boardHits(boardDto.getBoardHits())
                 .build();
-    }*/
+    }
+
+    public void boardUpdate(BoardDto boardDto){
+        this.boardTitle = boardDto.getBoardTitle();
+        this.boardContents = boardDto.getBoardContents();
+    }
 
     // Dto를 entity로 바꾸는 메소드
     /*public static BoardEntity toSaveEntity(BoardDto boradDto){
