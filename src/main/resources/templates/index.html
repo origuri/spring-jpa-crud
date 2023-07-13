@@ -7,12 +7,16 @@
 <body>
     <button onclick="saveReq()">글작성</button>
     <button onclick="listReq()">글목록</button>
+    <button onclick="pagingReq()">페이징</button>
 <script>
     const saveReq =() => {
         location.href="/board/save";
     }
     const listReq = () =>{
         location.href = "/board/";
+    }
+    const pagingReq = () =>{
+        location.href = "/board/paging";
     }
 </script>
 </body>

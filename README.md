@@ -16,4 +16,8 @@
    - 제목, 내용 수정 가능. 
 5. 글삭제(/board/delete/{id})
 6. 페이징 처리(/board/paging)
+   - /board/paging?page=2
+   - /board/page/2
+     - 페이징은 rest하게 표현하면 의미가 안맞을 수도 있음.
+     - 오늘의 1페이지와 내일의 1페이지는 다르기 때문
 

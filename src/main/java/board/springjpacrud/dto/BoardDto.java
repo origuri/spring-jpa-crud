@@ -20,17 +20,13 @@ public class BoardDto {
     private LocalDateTime boardCreatedTime;
     private LocalDateTime boardUpdatedTime;
 
-    @Builder
-    public BoardDto(BoardEntity boardEntity){
-        this.id = boardEntity.getId();
-        this.boardWriter = boardEntity.getBoardWriter();
-        this.boardPass = boardEntity.getBoardPass();
-        this.boardTitle = boardEntity.getBoardTitle();
-        this.boardContents = boardEntity.getBoardContents();
-        this.boardHits = boardEntity.getBoardHits();
-        this.boardCreatedTime = boardEntity.getCreatedTime();
-        this.boardUpdatedTime = boardEntity.getUpdatedTime();
-
+    public BoardDto(Long id, String boardWriter, String boardTitle, String boardContents, int boardHits, LocalDateTime boardCreatedTime) {
+        this.id = id;
+        this.boardWriter = boardWriter;
+        this.boardTitle = boardTitle;
+        this.boardContents = boardContents;
+        this.boardHits = boardHits;
+        this.boardCreatedTime = boardCreatedTime;
     }
 
     public static BoardDto toSaveDto(BoardEntity boardEntity){
