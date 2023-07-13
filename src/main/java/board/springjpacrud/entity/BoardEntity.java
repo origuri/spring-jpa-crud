@@ -8,7 +8,6 @@ import javax.persistence.*;
 // DB와 연결되는 클래스, service와 repository에서만 사용하자.
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "board_table")
 public class BoardEntity extends BaseEntity {
@@ -55,7 +54,7 @@ public class BoardEntity extends BaseEntity {
     }*/
 
     // Dto를 entity로 바꾸는 메소드
-    public static BoardEntity toSaveEntity(BoardDto boradDto){
+    /*public static BoardEntity toSaveEntity(BoardDto boradDto){
         BoardEntity boardEntity = new BoardEntity();
         boardEntity.setBoardWriter(boradDto.getBoardWriter());
         boardEntity.setBoardPass(boradDto.getBoardPass());
@@ -63,5 +62,5 @@ public class BoardEntity extends BaseEntity {
         boardEntity.setBoardContents(boradDto.getBoardContents());
         boardEntity.setBoardHits(0);
         return boardEntity;
-    }
+    }*/
 }
