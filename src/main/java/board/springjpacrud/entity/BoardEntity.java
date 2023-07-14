@@ -4,6 +4,8 @@ import board.springjpacrud.dto.BoardDto;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 // DB와 연결되는 클래스, service와 repository에서만 사용하자.
 @Entity
@@ -33,6 +35,14 @@ public class BoardEntity extends BaseEntity {
     @Column
     private int boardHits;
 
+    // 파일 첨부 관련 필드 추가
+    @Column
+    private int fileAttached;  // 파일 첨부 여부 (첨부 : 1, 미첨부 0) boolean 타입을 쓰면 엔티티에서 복잡해짐.
+
+    // 파일이 여러개가 올 수 있으니 list로 해준다.
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<BoardFileEntity> boradFileEntityList = new ArrayList<>();
+
     //bulider 패턴 연습
     @Builder
     public BoardEntity(BoardDto boardDto){
@@ -50,6 +60,7 @@ public class BoardEntity extends BaseEntity {
                 .boardTitle(boardDto.getBoardTitle())
                 .boardContents(boardDto.getBoardContents())
                 .boardHits(boardDto.getBoardHits())
+                .fileAttached(0) // 파일이 없는 경우
                 .build();
     }
 
@@ -61,6 +72,17 @@ public class BoardEntity extends BaseEntity {
                 .boardTitle(boardDto.getBoardTitle())
                 .boardContents(boardDto.getBoardContents())
                 .boardHits(boardDto.getBoardHits())
+                .build();
+    }
+
+    public static BoardEntity toSaveFileEntity(BoardDto boardDto) {
+        return BoardEntity.builder()
+                .boardWriter(boardDto.getBoardWriter())
+                .boardPass(boardDto.getBoardPass())
+                .boardTitle(boardDto.getBoardTitle())
+                .boardContents(boardDto.getBoardContents())
+                .boardHits(boardDto.getBoardHits())
+                .fileAttached(1) // 파일이 있는 경우
                 .build();
     }
 

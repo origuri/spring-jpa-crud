@@ -3,6 +3,8 @@ package board.springjpacrud.service;
 import board.springjpacrud.dto.BoardDto;
 
 import board.springjpacrud.entity.BoardEntity;
+import board.springjpacrud.entity.BoardFileEntity;
+import board.springjpacrud.repository.BoardFileRepository;
 import board.springjpacrud.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,8 +13,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Id;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,15 +32,41 @@ import java.util.stream.Collectors;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final BoardFileRepository boardFileRepository;
 
 
-    public void save(BoardDto boardDto) {
-        // 생성자 파라미터로 dto를 사용해서 entity로 변경한다.
-        BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDto);
-        System.out.println(boardDto);
-        // 변경한 entity로 insert 작업을 실행한다.
-        boardRepository.save(boardEntity);
+    public void save(BoardDto boardDto) throws IOException {
+        // 파일 첨부 여부에 따라 로직을 분리
+        if(boardDto.getBoardFile().isEmpty()){
+            // 생성자 파라미터로 dto를 사용해서 entity로 변경한다. 파일이 없는 경우
+            BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDto);
+            System.out.println(boardDto);
+            // 변경한 entity로 insert 작업을 실행한다.
+            boardRepository.save(boardEntity);
+        }else{
+            /*
+            *   첨부 파일이 있음
+            *   1. DTO에 담긴 파일을 꺼냄
+            *   2. 파일 이름을 가져옴
+            *   3. 서버 저장용 이름을 만듬
+            *   4. 저장 경로 설정
+            *   5. 해당 경로에 파일 저장
+            *   6. board_title에 해당 데이터 save 처리
+            *   7. board_file_table에 해당 데이터 save 처리
+            * */
+            MultipartFile boardFile = boardDto.getBoardFile();          // 1. DTO에 담긴 파일을 꺼냄
+            String originalFileName = boardFile.getOriginalFilename();  // 2. 확장자까지 같이 들고 옴
+            String storedFileName = System.currentTimeMillis()+"_"+originalFileName; // 3. 서버 저장용 이름을 만듦
+            String savePath = "C:/spring-study/spring-jpa-crud/src/main/resources/static/img/" + storedFileName; //4. 저장경로
+            boardFile.transferTo(new File(savePath)); // 5. 해당 경로에 파일 저장  여기서 파일 저장은 끝.
+            BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDto); // 6-1. dto를 엔티티로 변경
+            Long savedBoardEntityId = boardRepository.save(boardEntity).getId(); // 6-2 save하고 id를 받아옴.
+            BoardEntity savedBoardEntity = boardRepository.findById(savedBoardEntityId).get(); // 7-1 저장한 board를 다시 가져옴.
+            BoardFileEntity file = BoardFileEntity.createFile(savedBoardEntity, originalFileName, storedFileName);// 7-2 boardFileEntity에 값을 넣고
+            boardFileRepository.save(file); // 7-3 저장.
+        }
     }
+
     @Transactional(readOnly = true)
     public List<BoardDto> findAll() {
         List<BoardEntity> boardEntityList = boardRepository.findAll();

@@ -20,4 +20,13 @@
    - /board/page/2
      - 페이징은 rest하게 표현하면 의미가 안맞을 수도 있음.
      - 오늘의 1페이지와 내일의 1페이지는 다르기 때문
-
+7. 파일(이미지 첨부)
+    - 단일 파일 첨부
+    - 다중 파일 첨부
+    - 파일 첨부와 관련하여 추가 될 부분
+      - save.html
+      - BoardDto
+      - BoardService.save()
+      - boardEntity
+      - boardFileEntity, BoardFileRepository 추가
+      - detail.html
