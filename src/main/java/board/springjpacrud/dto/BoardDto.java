@@ -37,7 +37,8 @@ public class BoardDto {
     }
 
     public static BoardDto toSaveDto(BoardEntity boardEntity){
-        return BoardDto.builder()
+
+        BoardDto.BoardDtoBuilder builder = BoardDto.builder()
                 .id(boardEntity.getId())
                 .boardWriter(boardEntity.getBoardWriter())
                 .boardPass(boardEntity.getBoardPass())
@@ -45,8 +46,20 @@ public class BoardDto {
                 .boardContents(boardEntity.getBoardContents())
                 .boardHits(boardEntity.getBoardHits())
                 .boardCreatedTime(boardEntity.getCreatedTime())
-                .boardUpdatedTime(boardEntity.getUpdatedTime())
-                .build();
+                .boardUpdatedTime(boardEntity.getUpdatedTime());
+
+        if (boardEntity.getFileAttached() == 0) {
+            builder.fileAttached(boardEntity.getFileAttached());// 파일 없음
+        }else{
+            builder.fileAttached(boardEntity.getFileAttached()); // 파일 있음.
+            // 파일 이름 가져가야 됨.
+            // 파일 이름은 board_file_table(BoardFileEntity)에 들어 있음.
+            // boardEntity 안에 있는 boardFileEntity의 첫번째(get(0))의 이름.
+            builder.storedFileName(boardEntity.getBoradFileEntityList().get(0).getOriginalFileName());
+            builder.storedFileName(boardEntity.getBoradFileEntityList().get(0).getStoredFileName());
+        }
+
+        return builder.build();
     }
 
 }
