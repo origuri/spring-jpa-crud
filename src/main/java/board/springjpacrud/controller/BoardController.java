@@ -45,10 +45,12 @@ public class BoardController {
     *   게시글 데이터를 가져와서 detail.html에 출력
     * */
     @GetMapping("/{id}")
-    public String findById(@PathVariable("id") Long boardId, Model model){
+    public String findById(@PathVariable("id") Long boardId, Model model,
+                           @PageableDefault(page = 1) Pageable pageable){
         boardService.updateHits(boardId);
         BoardDto boardDto = boardService.findById(boardId);
         model.addAttribute("board", boardDto);
+        model.addAttribute("page", pageable.getPageNumber());
         return "detail";
     }
 
@@ -94,6 +96,7 @@ public class BoardController {
         model.addAttribute("boardList", boardList);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+
 
         return "paging";
     }
