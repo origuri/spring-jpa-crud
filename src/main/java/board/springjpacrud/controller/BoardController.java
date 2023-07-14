@@ -30,6 +30,7 @@ public class BoardController {
     public String save(@ModelAttribute BoardDto boardDto) throws IOException {
         System.out.println("boradDto => "+boardDto);
         boardService.save(boardDto);
+        System.out.println("boardDto id => "+boardDto.getId());
         return "index";
     }
 

@@ -54,7 +54,7 @@ public class BoardService {
             *   6. board_title에 해당 데이터 save 처리
             *   7. board_file_table에 해당 데이터 save 처리
             * */
-            MultipartFile boardFile = boardDto.getBoardFile();          // 1. DTO에 담긴 파일을 꺼냄
+            /*MultipartFile boardFile = boardDto.getBoardFile();          // 1. DTO에 담긴 파일을 꺼냄
             String originalFileName = boardFile.getOriginalFilename();  // 2. 확장자까지 같이 들고 옴
             String storedFileName = System.currentTimeMillis()+"_"+originalFileName; // 3. 서버 저장용 이름을 만듦
             String savePath = "C:/spring-study/spring-jpa-crud/src/main/resources/static/img/" + storedFileName; //4. 저장경로
@@ -63,9 +63,27 @@ public class BoardService {
             Long savedBoardEntityId = boardRepository.save(boardEntity).getId(); // 6-2 save하고 id를 받아옴.
             BoardEntity savedBoardEntity = boardRepository.findById(savedBoardEntityId).get(); // 7-1 저장한 board를 다시 가져옴.
             BoardFileEntity file = BoardFileEntity.createFile(savedBoardEntity, originalFileName, storedFileName);// 7-2 boardFileEntity에 값을 넣고
-            boardFileRepository.save(file); // 7-3 저장.
+            boardFileRepository.save(file); // 7-3 저장.*/
+
+            // 다중 파일 저장일 경우 먼저 부모 테이블이 저장이 되어있어야 한다.
+            BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDto);
+            Long savedBoardEntityId = boardRepository.save(boardEntity).getId();
+            BoardEntity savedBoardEntity = boardRepository.findById(savedBoardEntityId).get();
+
+            for(MultipartFile boardFile : boardDto.getBoardFile()){
+                String originalFileName = boardFile.getOriginalFilename();
+                String storedFileName = System.currentTimeMillis()+"_"+originalFileName;
+                String savePath = "C:/spring-study/spring-jpa-crud/src/main/resources/static/img/" + storedFileName;
+                boardFile.transferTo(new File(savePath));
+                BoardFileEntity file = BoardFileEntity.createFile(savedBoardEntity, originalFileName, storedFileName);
+                boardFileRepository.save(file);
+            }
+
+
         }
     }
+
+
 
     @Transactional(readOnly = true)
     public List<BoardDto> findAll() {
