@@ -49,7 +49,9 @@
 </div>
 
 <!--댓글 출력 부분-->
+<div id="comment-list">
 
+</div>
 </body>
 <!-- th:inline을 써야 const id = [[${board.id}]]; 이걸 사용 가능-->
 <script th:inline="javascript">
@@ -76,6 +78,23 @@
             .then(response => response.json())
             .then(data => {
               console.log("요청 성공", data);
+              let output = "<table>";
+              output += "<tr><th>댓글번호</th>";
+              output += "<th>작성자</th>";
+              output += "<th>내용</th>";
+              output += "<th>작성시간</th></tr>";
+              for (let i in data) {
+                output += "<tr>";
+                output += "<td>" + data[i].id + "</td>";
+                output += "<td>" + data[i].commentWriter + "</td>";
+                output += "<td>" + data[i].commentContents + "</td>";
+                output += "<td>" + data[i].commentCreatedTime + "</td>";
+                output += "</tr>";
+              }
+              output += "</table>";
+              document.querySelector('#comment-list').innerHTML = output;
+              document.getElementById('commentWriter').value = '';
+              document.getElementById('commentContents').value = '';
             })
             .catch(error => {
               console.log("요청 실패", error);

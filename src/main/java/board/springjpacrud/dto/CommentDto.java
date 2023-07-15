@@ -18,7 +18,8 @@ public class CommentDto {
     private String commentContents;
     private Long boardId;   // 어떤 게시물인지 구분하기 우해
 
-    private LocalDateTime commentCreateTime;
+
+    private LocalDateTime commentCreatedTime;
 
     public static CommentDto toCommentDto(CommentEntity commentEntity) {
         return CommentDto.builder()
@@ -26,7 +27,7 @@ public class CommentDto {
                 .commentWriter(commentEntity.getCommentWriter())
                 .commentContents(commentEntity.getCommentContents())
                 .boardId(commentEntity.getBoardEntity().getId())
-                .commentCreateTime(commentEntity.getCreatedTime())
+                .commentCreatedTime(commentEntity.getCreatedTime())
                 .build();
     }
 }
