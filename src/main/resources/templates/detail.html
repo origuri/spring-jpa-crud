@@ -40,9 +40,50 @@
 <button onclick="listReq()">목록</button>
 <button onclick="updateReq()">수정</button>
 <button onclick="deleteReq()">삭제</button>
+
+<!--댓글 작성 부분-->
+<div id ="comment-write">
+  <input type="text" id="commentWriter" placeholder="작성자">
+  <input type="text" id="commentContents" placeholder="댓글내용">
+  <button id="comment-write-btn" onclick="commentWrite()">댓글작성</button>
+</div>
+
+<!--댓글 출력 부분-->
+
 </body>
 <!-- th:inline을 써야 const id = [[${board.id}]]; 이걸 사용 가능-->
 <script th:inline="javascript">
+  const commentWrite = () => {
+    const writer = document.querySelector("#commentWriter").value;
+    const contents = document.querySelector("#commentContents").value;
+    const id = [[${board.id}]];
+    console.log("writer=> ",writer, "contents => ",contents, "id => ",id);
+
+    const data = {
+      "commentWriter" : writer,
+      "commentContents" : contents,
+      "boardId" : id
+    }
+
+    // 요청방식 post, 요청주소 : /comment/save, 요청데이터 : 작성자, 작성내용, 게시글 번호
+    fetch("/comment/save", { // url
+      method: "POST", //  요청 방법
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data) // 보낼 데이터
+    })
+            .then(response => response.json())
+            .then(data => {
+              alert("요청 성공", data);
+            })
+            .catch(error => {
+              alert("요청 실패", error);
+            });
+
+
+  }
+
   const listReq = () => {
     console.log("목록 요청");
     location.href = "/board/paging?page="+[[${page}]];
