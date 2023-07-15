@@ -43,6 +43,10 @@ public class BoardEntity extends BaseEntity {
     @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BoardFileEntity> boradFileEntityList = new ArrayList<>();
 
+    // 한 게시물에 댓글이 여러개일 수 있다
+    @OneToMany
+    private List<CommentEntity> commentEntityList = new ArrayList<>();
+
     //bulider 패턴 연습
     @Builder
     public BoardEntity(BoardDto boardDto){

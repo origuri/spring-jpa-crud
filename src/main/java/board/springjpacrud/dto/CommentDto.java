@@ -1,5 +1,6 @@
 package board.springjpacrud.dto;
 
+import board.springjpacrud.entity.CommentEntity;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Getter
 @Builder
 public class CommentDto {
 
@@ -18,4 +20,13 @@ public class CommentDto {
 
     private LocalDateTime commentCreateTime;
 
+    public static CommentDto toCommentDto(CommentEntity commentEntity) {
+        return CommentDto.builder()
+                .id(commentEntity.getId())
+                .commentWriter(commentEntity.getCommentWriter())
+                .commentContents(commentEntity.getCommentContents())
+                .boardId(commentEntity.getBoardEntity().getId())
+                .commentCreateTime(commentEntity.getCreatedTime())
+                .build();
+    }
 }
